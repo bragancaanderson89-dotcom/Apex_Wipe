@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pt-BR" data-ui-state="closed">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Apex_WIPE · Controle administrativo</title>
+  <style>
+    /* Trava inicial independente do CSS externo e do atributo hidden. */
+    #app:not([data-open="true"]),#modal-layer[hidden],#closed-preview[hidden]{display:none!important}
+    #app:not([data-open="true"])~#modal-layer,#app:not([data-open="true"])~#toast-region{display:none!important}
+    html,body{background:rgba(0,0,0,0)!important;background-image:none!important;color-scheme:normal!important}
+    body{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important}
+    html[data-ui-state="open"] body{display:block!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important}
+  </style>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="visibility.js"></script><script defer src="app.js"></script>
+</head>
+<body hidden style="display:none;background:transparent">
+<div id="app" hidden>
+  <div class="ambient" aria-hidden="true"></div>
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="brand" href="#wipe" aria-label="Apex WIPE início">
+        <svg class="brand-mark" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M20 5 37 34H27L20 21l-7 13H3L20 5Z" fill="currentColor"/><path d="m20 29 3 5h-6l3-5Z" fill="currentColor"/></svg>
+        <span>APEX<span class="brand-sub">WIPE SYSTEM</span></span><span class="version">1.0.4</span>
+      </a>
+      <div class="workspace"><span class="workspace-icon">M</span><div><strong id="server-name">MRI QBOX</strong><small>Workspace administrativo</small></div><span class="workspace-arrow">⌄</span></div>
+      <div class="nav-label">CONTROLE</div>
+      <nav aria-label="Menu principal">
+        <button class="nav-item" data-page="overview"><span data-icon="grid"></span>Visão geral</button>
+        <button class="nav-item active" data-page="wipe"><span data-icon="layers"></span>Wipe seletivo<span class="nav-dot"></span></button>
+        <button class="nav-item" data-page="history"><span data-icon="history"></span>Histórico<span id="history-count" class="count-badge">0</span></button>
+        <button class="nav-item" data-page="protections"><span data-icon="shield"></span>Proteções</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="protected-note"><span data-icon="shield"></span><strong>Configurações preservadas</strong><p>O plano alcança apenas os dados de gameplay selecionados.</p><button data-go="protections">Ver política de proteção <span>↗</span></button></div>
+        <div class="admin-profile"><div class="avatar" id="admin-initials">AD</div><div><strong id="admin-name">Administrador</strong><small>Acesso administrativo</small></div><span data-icon="lock"></span></div>
+      </div>
+    </aside>
+    <div class="main-shell">
+      <header class="topbar"><div class="breadcrumb">Workspace <span>/</span> <strong id="breadcrumb-page">Wipe seletivo</strong></div><div class="topbar-right"><span class="environment"><span class="live-dot"></span><span id="environment-label">Modo de revisão</span></span><span class="top-divider"></span><button class="icon-button" id="refresh" aria-label="Atualizar diagnóstico" title="Atualizar diagnóstico"><span data-icon="refresh"></span></button><button class="icon-button" id="close" aria-label="Fechar interface" title="Fechar (Esc)"><span data-icon="close"></span></button></div></header>
+      <main id="main-content">
+        <section id="page-wipe" class="page">
+          <div class="page-heading"><div><div class="eyebrow"><span class="small-line"></span> RECOMEÇAR, COM PRECISÃO</div><h1>Controle cada novo começo<span>.</span></h1><p>Escolha o alcance. Revise o impacto. Preserve o que importa.</p></div><div class="heading-seal"><span data-icon="shield"></span><div><strong>Proteção por padrão</strong><small>Backup antes de apagar</small></div></div></div>
+          <div class="section-heading"><h2>01 <span>Defina o alcance</span></h2><span class="helper">Uma operação. Apenas o necessário.</span></div>
+          <div class="scope-grid" role="group" aria-label="Alcance do wipe">
+            <button class="scope-card selected" data-scope="player" aria-pressed="true"><span class="scope-top"><span class="scope-icon" data-icon="user"></span><span class="scope-selector"></span></span><strong>Personagem</strong><small>Um player, um novo começo.</small><span class="scope-index">01</span></button>
+            <button class="scope-card" data-scope="stash" aria-pressed="false"><span class="scope-top"><span class="scope-icon" data-icon="box"></span><span class="scope-selector"></span></span><strong>Baú</strong><small>Limpe apenas o conteúdo.</small><span class="scope-index">02</span></button>
+            <button class="scope-card" data-scope="garage" aria-pressed="false"><span class="scope-top"><span class="scope-icon" data-icon="car"></span><span class="scope-selector"></span></span><strong>Garagem</strong><small>Veículos ou compartimentos.</small><span class="scope-index">03</span></button>
+            <button class="scope-card" data-scope="server" aria-pressed="false"><span class="scope-top"><span class="scope-icon" data-icon="server"></span><span class="scope-selector"></span></span><strong>Servidor inteiro</strong><small>O alcance de uma nova era.</small><span class="scope-index">04</span></button>
+          </div>
+          <div class="work-grid">
+            <div class="configuration panel">
+              <div class="panel-title"><h2>02 <span>Configure a operação</span></h2><span class="tag">SELETIVO</span></div>
+              <div id="target-fields">
+                <label for="target" id="target-label">Personagem</label>
+                <div class="search-field"><span data-icon="search"></span><input id="target" placeholder="Informe o citizenid ou busque um personagem" maxlength="100" autocomplete="off"><button class="search-button" id="search" aria-label="Buscar alvo"><span data-icon="arrow"></span></button></div>
+                <p class="field-hint" id="target-hint">O citizenid identifica um personagem específico, mesmo offline.</p>
+                <div id="search-results" class="search-results" hidden></div>
+                <div id="owner-field" hidden><label for="owner">Proprietário do baú <span class="optional">opcional</span></label><input id="owner" maxlength="60" placeholder="Vazio para baú compartilhado"><p class="field-hint">Nome + proprietário identificam o baú. Não use o ID de sessão.</p></div>
+              </div>
+              <div id="server-target" class="server-target" hidden><span data-icon="server"></span><div><strong>Todos os registros das categorias selecionadas</strong><p>O servidor inteiro segue a mesma política de seleção e backup.</p></div><span class="tag">GLOBAL</span></div>
+              <div class="modules-heading"><label>Dados a reiniciar</label><button id="select-all" class="text-button">Selecionar reinícios</button></div>
+              <div id="module-options" class="module-options"></div>
+              <div class="reason-field"><label for="reason">Motivo da operação</label><textarea id="reason" rows="2" maxlength="250" placeholder="Descreva o motivo para registrar no histórico..."></textarea><span id="reason-count" class="field-hint">0 / 250</span></div>
+            </div>
+            <aside class="summary panel">
+              <div class="panel-title"><h2>Prévia do impacto</h2><span data-icon="scan"></span></div>
+              <div class="impact-visual" aria-hidden="true"><div class="orbit orbit-1"></div><div class="orbit orbit-2"></div><div class="orbit orbit-3"></div><div class="orbit-core"><svg viewBox="0 0 40 40" fill="none"><path d="M20 5 37 34H27L20 21l-7 13H3L20 5Z" fill="currentColor"/></svg></div><span class="orbit-point point-1"></span><span class="orbit-point point-2"></span></div>
+              <div class="impact-caption"><strong id="impact-count">—</strong><span>registros no plano</span></div>
+              <div class="summary-lines"><div><span>Alcance</span><strong id="summary-scope">Personagem</strong></div><div><span>Categorias</span><strong id="summary-modules">1 selecionada</strong></div><div><span>Configurações de scripts</span><strong class="preserved"><span data-icon="check"></span>Preservadas</strong></div><div><span>Backup dos alvos</span><strong>Obrigatório</strong></div></div>
+              <div class="safety-caption"><span data-icon="info"></span><p>A simulação consulta o banco e prepara um plano. A confirmação vem depois.</p></div>
+              <button class="primary-button" id="preview"><span data-icon="scan"></span>Simular e revisar<span class="button-arrow">↗</span></button>
+              <div class="keyboard-hint">Nada é apagado nesta etapa <span data-icon="lock"></span></div>
+            </aside>
+          </div>
+          <div class="bottom-note"><span data-icon="shield"></span><span><strong>Mais controle, menos surpresas.</strong> Tabelas desconhecidas, bans e configurações ficam fora do wipe.</span><button class="text-button" data-go="protections">Explorar proteções ↗</button></div>
+        </section>
+        <section id="page-overview" class="page" hidden><div class="page-heading"><div><div class="eyebrow"><span class="small-line"></span> SEU CENTRO DE CONTROLE</div><h1>Um recomeço bem planejado<span>.</span></h1><p>Operações claras. Dados protegidos. Tudo no seu alcance.</p></div><button class="secondary-button" data-go="wipe">Preparar operação <span>↗</span></button></div><div class="overview-grid"><div class="overview-hero panel"><div class="eyebrow">APEX / WIPE SYSTEM</div><h2>O próximo capítulo<br>começa com controle.</h2><p>Limpe o que precisa. Mantenha a estrutura que faz sua cidade funcionar.</p><button class="primary-button" data-go="wipe">Criar um plano de wipe <span>↗</span></button><div class="hero-lines" aria-hidden="true"></div></div><div class="overview-stats panel"><h2>Estado do workspace</h2><div id="overview-stats"></div></div></div><div class="panel overview-diagnostic"><div class="panel-title"><h2>Diagnóstico de compatibilidade</h2><button class="text-button" data-go="protections">Ver detalhes ↗</button></div><div id="overview-compatibility" class="compatibility-grid"></div></div><div class="panel"><div class="panel-title"><h2>Atividade recente</h2><button class="text-button" data-go="history">Ver histórico ↗</button></div><div id="recent-activity"></div></div></section>
+        <section id="page-history" class="page" hidden><div class="page-heading"><div><div class="eyebrow"><span class="small-line"></span> RASTREABILIDADE</div><h1>Cada operação tem uma história<span>.</span></h1><p>Consulte quem executou, o motivo e a referência do backup.</p></div><button class="secondary-button" id="export-history"><span data-icon="download"></span>Exportar histórico</button></div><div class="history-search"><span data-icon="search"></span><input id="history-filter" placeholder="Filtrar por alvo, motivo ou administrador"></div><div class="panel history-panel"><table><thead><tr><th>Operação / alvo</th><th>Administrador</th><th>Quando</th><th>Status</th><th></th></tr></thead><tbody id="history-body"></tbody></table><div id="history-empty" class="empty-state" hidden><span data-icon="history"></span><h3>Nenhuma operação por aqui.</h3><p>As execuções serão registradas neste espaço.</p></div></div><p class="section-footnote">Até 30 operações recentes. Backups sensíveis são exportados somente pelo console do servidor.</p></section>
+        <section id="page-protections" class="page" hidden><div class="page-heading"><div><div class="eyebrow"><span class="small-line"></span> PROTEÇÃO DESDE O PRIMEIRO CLIQUE</div><h1>O que importa, permanece<span>.</span></h1><p>Uma política explícita para cada operação. Sem apagar por adivinhação.</p></div><span class="large-shield" data-icon="shield"></span></div><div class="protection-cards"><article class="panel"><span data-icon="lock"></span><h3>Admins autorizados</h3><p>Permissões ACE para abrir e executar. Todas as solicitações são verificadas no servidor.</p></article><article class="panel"><span data-icon="database"></span><h3>Backup transacional</h3><p>Os registros afetados são copiados antes das mudanças, dentro da mesma transação.</p></article><article class="panel"><span data-icon="layers"></span><h3>Configurações intactas</h3><p>Apenas tabelas e campos de gameplay previstos entram no plano. Tabelas desconhecidas ficam fora.</p></article></div><div class="protections-grid"><div class="panel"><div class="panel-title"><h2>Verificações do ambiente</h2><span class="tag">DIAGNÓSTICO</span></div><div id="compatibility-details"></div><h3 class="subheading">Condições para executar</h3><div id="blockers-list"></div></div><div class="panel"><div class="panel-title"><h2>Tabelas fora do mapeamento padrão</h2><span data-icon="shield"></span></div><p class="muted">Preservadas pelos perfis padrão. Um adaptador revisado pode incluir dados extras de personagem na remoção completa.</p><div id="protected-tables" class="table-tags"></div><div class="integration-note"><span data-icon="info"></span><p>NPWD, imóveis ps-housing/QBOX, portas ox_doorlock e RHD Garage têm integração automática. Personalizações não reconhecidas geram um diagnóstico antes da execução.</p></div></div></div></section>
+      </main>
+      <footer class="app-footer"><span>APEX_WIPE <span class="footer-dot">·</span> PRECISÃO EM CADA RECOMEÇO</span><span id="footer-mode">MRI QBOX / ADMIN CONSOLE</span></footer>
+    </div>
+  </div>
+  <div id="demo-banner" class="demo-banner" hidden><span class="live-dot"></span> PRÉVIA INTERATIVA <span class="demo-separator">/</span> Dados fictícios. Nenhuma conexão com seu servidor.</div>
+</div>
+<div id="modal-layer" class="modal-layer" hidden><section class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" tabindex="-1"><button class="icon-button modal-close" id="modal-close" aria-label="Fechar revisão"><span data-icon="close"></span></button><div id="modal-content"></div></section></div>
+<div id="toast-region" class="toast-region" role="status" aria-live="polite"></div>
+<div id="closed-preview" class="closed-preview" hidden><svg class="brand-mark" viewBox="0 0 40 40"><path d="M20 5 37 34H27L20 21l-7 13H3L20 5Z" fill="currentColor"/></svg><h1>Apex_WIPE</h1><p>A prévia foi fechada.</p><button class="primary-button" id="reopen">Reabrir interface ↗</button></div>
+</body>
+</html>
