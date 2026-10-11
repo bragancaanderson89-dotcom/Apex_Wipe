@@ -1,8 +1,8 @@
 fx_version 'cerulean'
 game 'gta5'
 name 'Apex_WIPE'
-author 'Apex'
-description 'Wipe seletivo para MRI QBOX com plano, backup transacional e proteção de configurações'
+author 'Felipe Becker'
+description 'Wipe seletivo com plano, backup transacional e proteção de configurações'
 version '1.0.6'
 
 client_script 'client/main.lua'
